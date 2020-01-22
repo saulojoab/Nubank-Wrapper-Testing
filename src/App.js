@@ -8,6 +8,7 @@ import {Grid} from '@material-ui/core';
 import nu from './nubank/nu';
 
 import NuCard from './components/NuCard';
+import NuHeader from './components/NuHeader';
 
 function App() {
   const [transactions, setTransactions] = useState([]);
@@ -58,12 +59,10 @@ function App() {
 
   return (
     <Grid container className="App">
-      <Grid item xs={12}>
-      <h1>{userInfo ? 'Olá, ' + userInfo.preferred_name : ''}</h1>
-      <label>Seu limite: R${accountInfo ? (accountInfo.credit_limit / 100) : ''}</label>
-    </Grid>
-
+      
+      <NuHeader accountInfo={accountInfo} userInfo={userInfo} />
       <br/><br/>
+      <Grid item xs={6}>
       {transactions.length > 0 ? transactions.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime()).reverse().map((t) => {
               return(
                 <NuCard 
@@ -75,6 +74,10 @@ function App() {
               )
           })
       : 'OKNOTOK'}
+      </Grid>
+      <Grid item xs={6}>
+        
+      </Grid>
     </Grid>
   );
 }

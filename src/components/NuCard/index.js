@@ -11,8 +11,6 @@ const useStyles = makeStyles({
         backgroundColor: '#8C009D',
         padding: 20,
         border: '1px solid #AE00C3',
-        alignItems: 'center',
-        justifyContent: 'center'
     },
     merchant_name: {
         fontWeight: 'bolder',
@@ -24,10 +22,20 @@ const useStyles = makeStyles({
         fontSize: 25,
         color: 'white'
     },
+    amountContainer: {
+        fontFamily: 'Roboto',
+        fontSize: 20,
+        backgroundColor: '#8C009D',
+        padding: 20,
+        border: '1px solid #AE00C3',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     amount: {
         fontWeight: '100',
-        fontSize: 30,
-        color: 'white'
+        fontSize: 40,
+        color: 'white',
     },
     time: {
         fontWeight: '500',
@@ -40,7 +48,8 @@ export default function NuCard(props) {
     const classes = useStyles();
     return (
         <>
-        <Grid container item xs={6} className={classes.container}>
+        <Grid container>
+        <Grid item xs={6} className={classes.container}>
             <Grid item xs={12} className={classes.merchant_name}>
                 {props.merchant_name}
             </Grid>
@@ -51,10 +60,11 @@ export default function NuCard(props) {
                 {moment(props.time).format('hh:mm - DD/MM/YYYY')}
             </Grid>
         </Grid>
-        <Grid container item xs={6} className={[classes.container, {backgroundColor: 'white'}]}>
+        <Grid item xs={6} className={[classes.amountContainer]}>
             <Grid item xs={12} className={classes.amount}>
                 <span style={{fontWeight: 'bolder'}}>R$ </span>{props.amount / 100}
             </Grid>
+        </Grid>
         </Grid>
         </>
     )
