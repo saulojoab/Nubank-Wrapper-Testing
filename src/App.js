@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
-import {Grid} from '@material-ui/core';
+import {Grid, CircularProgress} from '@material-ui/core';
 
 //import data from './data';
 
@@ -9,11 +9,13 @@ import nu from './nubank/nu';
 
 import NuCard from './components/NuCard';
 import NuHeader from './components/NuHeader';
+import NuBills from './components/NuBills';
 
 function App() {
   const [transactions, setTransactions] = useState([]);
   const [userInfo, setUserInfo] = useState(null);
   const [accountInfo, setAccountInfo] = useState(null);
+  const [billsSummary, setBillsSummary] = useState([]);
 
   const loginNu = async () => {
     //const login = await nu.auth.login({cpf: 'yourcpf', password: 'yourpassword'});
@@ -51,32 +53,55 @@ function App() {
     console.log(accInfo);
   }
 
+  const getBillsSummary = async () => {
+    const bills = await nu.actions.getBillsSummary();
+    setBillsSummary(bills.bills);
+    console.log(bills.bills);
+  }
+
   useEffect(() => {
+    discoveryNu();
     getTransactions();
     getAccountInfo();
     getUserInfo();
+    getBillsSummary();
   }, []);
 
   return (
     <Grid container className="App">
       
       <NuHeader accountInfo={accountInfo} userInfo={userInfo} />
-      <br/><br/>
-      <Grid item xs={6}>
-      {transactions.length > 0 ? transactions.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime()).reverse().map((t) => {
-              return(
-                <NuCard 
-                merchant_name={t.merchant_name} 
-                category={t.category} 
-                time={t.time} 
-                amount={t.amount}
-                />
-              )
-          })
-      : 'OKNOTOK'}
+      <Grid item xs={12} sm={6}>
+        <br/>
+        <span style={{fontSize: 45, fontWeight: '100', color: 'purple'}}>Suas Compras:</span>
+        <br/>
+        {transactions.length > 0 ? transactions.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime()).reverse().map((t) => {
+                return(
+                  <NuCard 
+                  merchant_name={t.merchant_name} 
+                  category={t.category} 
+                  time={t.time} 
+                  amount={t.amount}
+                  />
+                )
+            })
+        : <CircularProgress style={{color: '#8C009D'}} />}
       </Grid>
-      <Grid item xs={6}>
-        
+      <Grid item xs={12} sm={6}>
+        <br/>
+        <span style={{fontSize: 45, fontWeight: '100', color: 'purple'}}>Suas Faturas:</span>
+        <br/>
+        {billsSummary.length > 0 ? billsSummary.sort((a, b) => new Date(a.open_date).getTime() - new Date(b.open_date).getTime()).reverse().map((b) => {
+                  return(
+                    <NuBills 
+                    open_date={b.summary.open_date} 
+                    due_date={b.summary.due_date} 
+                    close_date={b.summary.close_date} 
+                    total_balance={b.summary.total_balance} 
+                    />
+                  )
+              })
+          : <CircularProgress style={{color: '#8C009D'}} />}
       </Grid>
     </Grid>
   );

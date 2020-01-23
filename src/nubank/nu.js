@@ -109,7 +109,30 @@ const actions = {
         const accInfo = res.data;
 
         return accInfo;
-    }
+    },
+
+    getBillsSummary: async () => {
+        const data = JSON.parse(localStorage.getItem('data'));
+
+        const headersNu = {
+            ...HEADERS_NU,
+            "authorization": "Bearer " + data.access_token
+        }
+
+        let res = await axios.get(data._links.account.href, {
+            headers: headersNu
+        })
+
+        const accInfo = res.data;
+
+        res = await axios.get(accInfo.account._links.bills_summary.href, {
+            headers: headersNu
+        })
+
+        const resJson = res.data;
+
+        return resJson;
+    },
 }
 
 export default {auth, actions, discovery, discoveryApp};
